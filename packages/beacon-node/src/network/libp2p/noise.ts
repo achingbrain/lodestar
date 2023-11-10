@@ -23,7 +23,7 @@ const nodeCrypto: Pick<ICryptoInterface, "hashSHA256" | "chaCha20Poly1305Encrypt
     const final = cipher.final();
     const tag = cipher.getAuthTag();
 
-    const encrypted = Buffer.concat([updated, tag, final]);
+    const encrypted = Buffer.concat([updated, tag, final], updated.byteLength + tag.byteLength + final.byteLength);
     return encrypted;
   },
 
@@ -40,7 +40,7 @@ const nodeCrypto: Pick<ICryptoInterface, "hashSHA256" | "chaCha20Poly1305Encrypt
     const updated = decipher.update(text);
     const final = decipher.final();
     if (final.byteLength > 0) {
-      return Buffer.concat([updated, final]);
+      return Buffer.concat([updated, final], updated.byteLength + final.byteLength);
     }
     return updated;
   },
